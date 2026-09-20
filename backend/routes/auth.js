@@ -61,15 +61,15 @@ router.post("/register", async (req, res) => {
       },
     });
 
-  } catch (error) {
-    console.error("Register error:", error.message);
+  }    catch (error) {
+    console.error("Register error:", error);
 
     res.status(500).json({
       success: false,
       message: "Server error",
+      error: error.message,
     });
   }
-});
 
 
 // =========================
