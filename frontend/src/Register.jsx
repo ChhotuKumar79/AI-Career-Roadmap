@@ -120,6 +120,25 @@ function Register() {
           </button>
         </form>
 
+        <p
+  style={{
+    textAlign: "center",
+    marginTop: "15px",
+  }}
+>
+  Already have an account?{" "}
+  <a
+    href="/login"
+    style={{
+      color: "#2563eb",
+      fontWeight: "bold",
+      textDecoration: "none",
+    }}
+  >
+    Login
+  </a>
+</p>
+
         {message && (
           <p
             style={{
