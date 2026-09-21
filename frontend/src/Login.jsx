@@ -24,7 +24,7 @@ function Login() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/auth/login",
+        "https://ai-career-roadmap-75cr.vercel.app/api/auth/login",
         {
           method: "POST",
           headers: {

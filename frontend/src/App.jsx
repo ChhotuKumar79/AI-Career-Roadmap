@@ -2503,7 +2503,7 @@ function App() {
     }
 
     const response = await fetch(
-      "http://localhost:5000/api/progress/save",
+      "https://ai-career-roadmap-75cr.vercel.app/api/progress/save",
       {
         method: "POST",
         headers: {
