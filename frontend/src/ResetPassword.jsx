@@ -1,20 +1,12 @@
 import { useState } from "react";
 
-function Login() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+function ResetPassword() {
+  const params = new URLSearchParams(window.location.search);
+  const tokenFromUrl = params.get("token") || "";
 
+  const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,32 +16,24 @@ function Login() {
 
     try {
       const response = await fetch(
-        "https://ai-career-roadmap-75cr.vercel.app/api/auth/login",
+        "https://ai-career-roadmap-75cr.vercel.app/api/auth/reset-password",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify({
+            resetToken: tokenFromUrl,
+            newPassword,
+          }),
         }
       );
 
       const data = await response.json();
 
-      if (data.success) {
-  localStorage.setItem("token", data.token);
-  localStorage.setItem("user", JSON.stringify(data.user));
-
-  setMessage("Login successful! 🎉");
-
-  setTimeout(() => {
-    window.location.href = "/";
-  }, 1000);
-} else {
-        setMessage(data.message);
-      }
+      setMessage(data.message);
     } catch (error) {
-      console.error(error);
+      console.error("Reset password error:", error);
       setMessage("Server se connection nahi ho raha.");
     } finally {
       setLoading(false);
@@ -75,83 +59,37 @@ function Login() {
           boxShadow: "0 5px 20px rgba(0,0,0,0.1)",
         }}
       >
-        <h2
-          style={{
-            textAlign: "center",
-            marginBottom: "25px",
-          }}
-        >
-          Welcome Back 👋
+        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+          Reset Password 🔐
         </h2>
+
+        {!tokenFromUrl && (
+          <p style={{ color: "red", textAlign: "center" }}>
+            Reset token missing.
+          </p>
+        )}
 
         <form onSubmit={handleSubmit}>
           <input
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            style={inputStyle}
-          />
-
-          <input
             type="password"
-            name="password"
-            placeholder="Enter your password"
-            value={formData.password}
-            onChange={handleChange}
+            placeholder="Enter New Password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
             required
+            minLength="6"
             style={inputStyle}
           />
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !tokenFromUrl}
             style={buttonStyle}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Resetting..." : "Reset Password"}
           </button>
         </form>
 
-        <p
-  style={{
-    textAlign: "center",
-    marginTop: "15px",
-  }}
->
-  Don't have an account?{" "}
-  <a
-    href="/register"
-    style={{
-      color: "#2563eb",
-      fontWeight: "bold",
-      textDecoration: "none",
-    }}
-  >
-    Register
-  </a>
-</p>
-<p
-  style={{
-    textAlign: "center",
-    marginTop: "10px",
-  }}
->
-  <a
-    href="/forgot-password"
-    style={{
-      color: "#dc2626",
-      fontWeight: "bold",
-      textDecoration: "none",
-    }}
-  >
-    Forgot Password?
-  </a>
-</p>
-
         {message && (
-          
           <p
             style={{
               textAlign: "center",
@@ -162,6 +100,19 @@ function Login() {
             {message}
           </p>
         )}
+
+        <p style={{ textAlign: "center", marginTop: "15px" }}>
+          <a
+            href="/login"
+            style={{
+              color: "#2563eb",
+              fontWeight: "bold",
+              textDecoration: "none",
+            }}
+          >
+            Back to Login
+          </a>
+        </p>
       </div>
     </div>
   );
@@ -188,4 +139,4 @@ const buttonStyle = {
   cursor: "pointer",
 };
 
-export default Login;
+export default ResetPassword;

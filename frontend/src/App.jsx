@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Register from "./Register";
 import Login from "./Login";
+import ForgotPassword from "./ForgotPassword";
+import ResetPassword from "./ResetPassword";
 
 /* =========================================================
    QUIZ GENERATOR
@@ -2438,12 +2440,20 @@ careers.forEach((career) => {
 
 function App() {
   if (window.location.pathname === "/register") {
-    return <Register />;
-  }
+  return <Register />;
+}
 
-  if (window.location.pathname === "/login") {
-    return <Login />;
-  }
+if (window.location.pathname === "/login") {
+  return <Login />;
+}
+
+if (window.location.pathname === "/forgot-password") {
+  return <ForgotPassword />;
+}
+
+if (window.location.pathname === "/reset-password") {
+  return <ResetPassword />;
+}
   const [career, setCareer] = useState(null);
   const [technology, setTechnology] = useState(null);
   const [topic, setTopic] = useState(null);
