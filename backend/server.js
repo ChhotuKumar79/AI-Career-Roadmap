@@ -21,6 +21,46 @@ app.use(
 
 app.use(express.json());
 
+// MongoDB connection
+let mongoConnectionPromise = null;
+
+const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) {
+    return;
+  }
+
+  if (!mongoConnectionPromise) {
+    mongoConnectionPromise = mongoose
+      .connect(process.env.MONGO_URI, {
+        serverSelectionTimeoutMS: 10000,
+      })
+      .then(() => {
+        console.log("MongoDB connected successfully ✅");
+      })
+      .catch((error) => {
+        mongoConnectionPromise = null;
+        console.error("MongoDB connection failed ❌");
+        console.error(error.message);
+        throw error;
+      });
+  }
+
+  await mongoConnectionPromise;
+};
+
+// Wait for MongoDB before API requests
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    res.status(503).json({
+      success: false,
+      message: "Database connection failed",
+    });
+  }
+});
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/progress", progressRoutes);
@@ -33,18 +73,7 @@ app.get("/", (req, res) => {
   });
 });
 
-// MongoDB Connection
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("MongoDB connected successfully ✅");
-  })
-  .catch((error) => {
-    console.error("MongoDB connection failed ❌");
-    console.error(error.message);
-  });
-
-// Local development server
+// Local development
 if (process.env.NODE_ENV !== "production") {
   const PORT = process.env.PORT || 5000;
 
@@ -53,5 +82,5 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-// Vercel ke liye important
+// Vercel
 module.exports = app;
