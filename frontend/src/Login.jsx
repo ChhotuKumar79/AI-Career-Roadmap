@@ -114,6 +114,25 @@ function Login() {
           </button>
         </form>
 
+        <p
+  style={{
+    textAlign: "center",
+    marginTop: "15px",
+  }}
+>
+  Don't have an account?{" "}
+  <a
+    href="/register"
+    style={{
+      color: "#2563eb",
+      fontWeight: "bold",
+      textDecoration: "none",
+    }}
+  >
+    Register
+  </a>
+</p>
+
         {message && (
           <p
             style={{
